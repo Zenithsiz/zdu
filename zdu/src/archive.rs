@@ -22,4 +22,4 @@ const MAGIC: [u8; 4] = *b"zduA";
 const ARCHIVE_VERSION: u32 = 0;
 
 /// Directory header size
-const DIR_HEADER_SIZE: u64 = 16;
+const DIR_HEADER_SIZE: u16 = 16;

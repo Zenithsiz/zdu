@@ -93,6 +93,8 @@ fn display_entry<W: io::Write>(entry_idx: usize, args: &mut Args<W>) -> Result<(
 	let files = match entry {
 		// Note: `-1` to exclude the directory itself, which is included in the count
 		Entry::Import(entry) if entry.import.kind.is_dir() => Some(stats.files - 1),
+		Entry::Import(_) => None,
+
 		// Note: We only want the recursive files, so ignore the number of files in the group
 		Entry::Group(group_entry) => match group_entry.stats.files == group_entry.len {
 			// Note: If there are no inner files, don't display any number of files because it'd
@@ -100,11 +102,10 @@ fn display_entry<W: io::Write>(entry_idx: usize, args: &mut Args<W>) -> Result<(
 			true => None,
 			false => Some(group_entry.stats.files - group_entry.len),
 		},
-		_ => None,
 	};
 
 	if let Some(files) = files {
-		write!(args.output, " ({} files)", files.blue())?
+		write!(args.output, " ({} files)", files.blue())?;
 	}
 
 	writeln!(args.output)?;
@@ -201,7 +202,7 @@ fn entry<W: io::Write>(entry_idx: usize, args: &mut Args<'_, W>) -> Result<(), A
 				args.entries.truncate(entries_start_idx);
 			},
 		}
-	};
+	}
 
 	self::display_entry(entry_idx, args)?;
 

@@ -16,7 +16,7 @@ impl From<ops::Range<usize>> for OsStrRange {
 }
 
 impl ops::Index<OsStrRange> for OsStr {
-	type Output = OsStr;
+	type Output = Self;
 
 	fn index(&self, range: OsStrRange) -> &Self::Output {
 		self.slice_encoded_bytes(range.0.start..range.0.end)

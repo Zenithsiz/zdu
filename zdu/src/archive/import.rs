@@ -106,7 +106,7 @@ impl Importer {
 						entry_path.as_path().join(prev_path).display()
 					),
 				},
-			};
+			}
 			prev_path = Path::new(cur_path);
 		}
 
@@ -121,7 +121,8 @@ impl Importer {
 
 	/// Skips over a directory's entries
 	pub fn skip_dir_entries(&mut self, dir: DirHeader) -> Result<(), AppError> {
-		self.input.seek_relative(dir.entries_offset as i64)?;
+		let offset = i64::try_from(dir.entries_offset).context("Entries offset didn't fit into an `i64`")?;
+		self.input.seek_relative(offset)?;
 		Ok(())
 	}
 

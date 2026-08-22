@@ -159,7 +159,7 @@ pub fn entry_from_metadata(
 			tracing::warn!("Ignoring unknown file type of {}", path.display());
 			return Ok(None);
 		},
-	};
+	}
 
 	Ok(Some(stats))
 }

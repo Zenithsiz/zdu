@@ -27,8 +27,8 @@ pub enum SortOrderKind {
 impl SortOrder {
 	/// Creates a sort order from clap flags
 	// TODO: Create a sub-parser for all these flags and flatten it?
-	pub fn new(sort: args::SortOrder, sort_directories: bool, sort_reverse: bool) -> Self {
-		SortOrder {
+	pub const fn new(sort: args::SortOrder, sort_directories: bool, sort_reverse: bool) -> Self {
+		Self {
 			kind:        match sort {
 				args::SortOrder::Size => SortOrderKind::Size,
 				args::SortOrder::Blocks => SortOrderKind::Blocks,
@@ -40,7 +40,7 @@ impl SortOrder {
 	}
 
 	/// Compares two entries according to this sort order, except for reversing
-	fn cmp_entry_no_reverse(&self, lhs: &Entry, rhs: &Entry) -> cmp::Ordering {
+	fn cmp_entry_no_reverse(self, lhs: &Entry, rhs: &Entry) -> cmp::Ordering {
 		if self.dirs_before {
 			match (lhs.is_group_or_dir(), rhs.is_group_or_dir()) {
 				(true, false) => return cmp::Ordering::Greater,
@@ -59,7 +59,7 @@ impl SortOrder {
 	}
 
 	/// Compares two entries according to this sort order
-	pub fn cmp_entry(&self, lhs: &Entry, rhs: &Entry) -> cmp::Ordering {
+	pub fn cmp_entry(self, lhs: &Entry, rhs: &Entry) -> cmp::Ordering {
 		let cmp = self.cmp_entry_no_reverse(lhs, rhs);
 		match self.reverse {
 			true => cmp.reverse(),

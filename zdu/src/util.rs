@@ -79,7 +79,7 @@ pub fn common_os_str_prefix<'a>(lhs: &'a OsStr, rhs: &'a OsStr) -> (&'a OsStr, &
 	let rhs_bytes = rhs.as_encoded_bytes();
 	let idx = iter::zip(lhs_bytes, rhs_bytes)
 		.position(|(lhs, rhs)| lhs != rhs)
-		.unwrap_or(usize::min(lhs_bytes.len(), rhs_bytes.len()));
+		.unwrap_or_else(|| usize::min(lhs_bytes.len(), rhs_bytes.len()));
 
 	(
 		lhs.slice_encoded_bytes(..idx),

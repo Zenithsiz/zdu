@@ -10,12 +10,12 @@ pub struct TreeDisplay {
 
 impl TreeDisplay {
 	/// Creates a new, empty, tree display with no indentation
-	pub fn new() -> Self {
+	pub const fn new() -> Self {
 		Self { idxs: vec![] }
 	}
 
 	/// Returns the current depth of this tree display
-	pub fn depth(&self) -> usize {
+	pub const fn depth(&self) -> usize {
 		self.idxs.len()
 	}
 

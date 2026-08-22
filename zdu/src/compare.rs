@@ -34,6 +34,7 @@ pub struct Config<'a, W> {
 }
 
 /// Compares an entry
+#[expect(clippy::needless_pass_by_value, reason = "More ergonomic")]
 pub fn compare<W: io::Write>(config: Config<'_, W>) -> Result<(), AppError> {
 	let mut names = OsString::with_capacity(config.lhs_entry_name.len() + config.rhs_entry_name.len());
 	names.push(config.lhs_entry_name);
@@ -80,7 +81,7 @@ fn entry_changes<W: io::Write>(
 	output: &mut W,
 	changes: Changes,
 	has_children: bool,
-	args: &mut Args,
+	args: &Args,
 ) -> Result<bool, AppError> {
 	if args
 		.max_depth
@@ -163,7 +164,7 @@ fn entry_changes<W: io::Write>(
 					}
 				},
 			}
-			write!(output, "{size} ({blocks_size} on disk) ({files} files)")?
+			write!(output, "{size} ({blocks_size} on disk) ({files} files)")?;
 		},
 		Changes::Removed { lhs_entry_name, stats } => {
 			let lhs_entry_name = &args.names[lhs_entry_name];
@@ -175,7 +176,7 @@ fn entry_changes<W: io::Write>(
 				lhs_entry_name.as_path().display().red(),
 				util::fmt_size(stats.size).green().bold(),
 				util::fmt_size(BLOCK_SIZE * stats.blocks).green(),
-			)?
+			)?;
 		},
 		Changes::Added { rhs_entry_name, stats } => {
 			let rhs_entry_name = &args.names[rhs_entry_name];
@@ -187,7 +188,7 @@ fn entry_changes<W: io::Write>(
 				rhs_entry_name.as_path().display().green(),
 				util::fmt_size(stats.size).green().bold(),
 				util::fmt_size(BLOCK_SIZE * stats.blocks).green(),
-			)?
+			)?;
 		},
 	}
 
@@ -280,7 +281,7 @@ fn dir_entries<W: io::Write>(
 				};
 				if self::entry_changes(output, changes, false, args)? {
 					cur_entries_idx += 1;
-				};
+				}
 
 				cur_rhs_idx += 1;
 			},
@@ -360,11 +361,11 @@ impl Entry {
 		for _ in 0..dir.entries_len {
 			let (import, name_range) = importer.read_entry(names)?;
 			let stats = importer.read_entry_stats(import)?;
-			entries.push(Entry {
+			entries.push(Self {
 				name_range,
 				stats,
 				import,
-			})
+			});
 		}
 		let range = (entries_start_idx..entries.len()).into();
 
@@ -386,7 +387,7 @@ struct Args {
 	show_unchanged: bool,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 enum Changes {
 	Changed {
 		lhs_entry_name: OsStrRange,

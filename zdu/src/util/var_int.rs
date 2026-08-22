@@ -8,7 +8,7 @@ use std::io;
 pub fn encode<W: io::Write>(writer: &mut W, mut n: u64) -> Result<u64, io::Error> {
 	let mut bytes_written = 0;
 	loop {
-		match n <= 0x7f || bytes_written + 1 >= MAX_BUFFER_LENGTH {
+		match n <= 0x7f || bytes_written + 1 >= u64::from(MAX_BUFFER_LENGTH) {
 			true => {
 				let part = n.checked_truncate().expect("Should fit within a single byte");
 				writer.write_all(&[part])?;
@@ -47,7 +47,7 @@ pub fn decode<W: io::Read>(reader: &mut W) -> Result<u64, io::Error> {
 	Ok(n)
 }
 
-const MAX_BUFFER_LENGTH: u64 = 9;
+const MAX_BUFFER_LENGTH: u16 = 9;
 
 #[cfg(test)]
 mod tests {
@@ -71,11 +71,11 @@ mod tests {
 			(0x3fff, b"\xff\x7f"),
 			(0x4000, b"\x80\x80\x01"),
 			(0x4001, b"\x81\x80\x01"),
-			(0x1fffff, b"\xff\xff\x7f"),
-			(0x200000, b"\x80\x80\x80\x01"),
-			(0x200001, b"\x81\x80\x80\x01"),
-			(0xfffffff, b"\xff\xff\xff\x7f"),
-			(0x10000000, b"\x80\x80\x80\x80\x01"),
+			(0x1f_ffff, b"\xff\xff\x7f"),
+			(0x20_0000, b"\x80\x80\x80\x01"),
+			(0x20_0001, b"\x81\x80\x80\x01"),
+			(0xfff_ffff, b"\xff\xff\xff\x7f"),
+			(0x1000_0000, b"\x80\x80\x80\x80\x01"),
 			(u64::MAX / 2, b"\xff\xff\xff\xff\xff\xff\xff\xff\x7f"),
 			(u64::MAX, b"\xff\xff\xff\xff\xff\xff\xff\xff\xff"),
 		];
@@ -84,11 +84,13 @@ mod tests {
 			let mut buffer = io::Cursor::new([0; super::MAX_BUFFER_LENGTH as usize]);
 			let bytes_written = super::encode(&mut buffer, n).context("Unable to encode")?;
 			let buffer = buffer.into_inner();
+
+			let bytes_written = usize::try_from(bytes_written).expect("`u64` didn't fit into a `usize`");
 			ensure!(
-				expected == &buffer[..bytes_written as usize],
+				expected == &buffer[..bytes_written],
 				"Expected encoding to yield {}, found {}",
 				expected.display_hex(),
-				buffer[..bytes_written as usize].display_hex(),
+				buffer[..bytes_written].display_hex(),
 			);
 
 			let decoded = super::decode(&mut io::Cursor::new(&buffer)).context("Unable to decode")?;

@@ -45,9 +45,14 @@ use {
 	util::Colorize as _,
 };
 
+#[expect(clippy::too_many_lines, reason = "TODO: Refactor")]
 fn main() -> Result<(), AppError> {
 	let indicatif_layer = tracing_indicatif::IndicatifLayer::new()
 		.with_progress_style(
+			#[expect(
+				clippy::literal_string_with_formatting_args,
+				reason = "`indicatif` will resolve these"
+			)]
 			tracing_indicatif::style::ProgressStyle::default_spinner()
 				.progress_chars("█▉▊▋▌▍▎▏ ")
 				.template(
@@ -144,7 +149,7 @@ fn main() -> Result<(), AppError> {
 
 			if let Some(path) = &path {
 				(root_entry, root_path) = importer.seek_path(root_entry, root_path, path)?;
-			};
+			}
 
 			let mut stdout = io::stdout().lock();
 			let sort_order = analyze::sort::SortOrder::new(sort, sort_directories, sort_reverse);
@@ -169,7 +174,7 @@ fn main() -> Result<(), AppError> {
 
 			if let Some(path) = &path {
 				(root_entry, root_path) = importer.seek_path(root_entry, root_path, path)?;
-			};
+			}
 
 			let output = find_duplicates::find_duplicates(find_duplicates::Config {
 				importer:     &mut importer,

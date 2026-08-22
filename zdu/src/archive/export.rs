@@ -86,7 +86,10 @@ impl<'a> DirEntryExporter<'a> {
 		//       to get the current position anyway and `BufWriter` doesn't expose
 		//       any way other than `seek(0)`, so we might as well skip past the
 		//       buffer we're about to write.
-		let header_pos = exporter.output.seek(io::SeekFrom::Current(DIR_HEADER_SIZE as i64))? - DIR_HEADER_SIZE;
+		let header_pos = exporter
+			.output
+			.seek(io::SeekFrom::Current(i64::from(DIR_HEADER_SIZE)))? -
+			u64::from(DIR_HEADER_SIZE);
 
 		Ok(DirExporter {
 			metadata: self.metadata,
@@ -133,7 +136,7 @@ impl DirExporter<'_> {
 		self::write_dir_footer(&mut exporter.output, total_stats)?;
 		let entry_end_pos = exporter.output.stream_position()?;
 
-		let entries_start_pos = self.header_pos + DIR_HEADER_SIZE;
+		let entries_start_pos = self.header_pos + u64::from(DIR_HEADER_SIZE);
 		let entries_offset = entries_end_pos - entries_start_pos;
 
 		exporter.output.seek(io::SeekFrom::Start(self.header_pos))?;

@@ -20,6 +20,7 @@ pub struct Config<'a> {
 }
 
 /// Reads an entry from an import
+#[expect(clippy::needless_pass_by_value, reason = "More ergonomic")]
 pub fn read_from_import(config: Config) -> Result<ImportEntry, AppError> {
 	let (import, name_range) = config
 		.importer
@@ -67,7 +68,7 @@ pub struct GroupEntry {
 
 impl Entry {
 	/// Gets the stats of this entry
-	pub fn stats(&self) -> Stats {
+	pub const fn stats(&self) -> Stats {
 		match self {
 			Self::Import(entry) => entry.stats,
 			Self::Group(entry) => entry.stats,
@@ -75,7 +76,7 @@ impl Entry {
 	}
 
 	/// Returns if this entry is a group or a directory
-	pub fn is_group_or_dir(&self) -> bool {
+	pub const fn is_group_or_dir(&self) -> bool {
 		match self {
 			Self::Import(entry) => entry.import.kind.is_dir(),
 			Self::Group(_) => true,
