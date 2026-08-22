@@ -1,0 +1,13 @@
+{
+  "cSpell.words": [
+    "bumpalo",
+    "flate",
+    "humansize",
+    "indicatif",
+    "memchr",
+    "syscall",
+    "thiserror",
+    "zeekstd",
+    "zutil"
+  ]
+}
