@@ -176,6 +176,7 @@ fn entry<W: io::Write>(entry_idx: usize, args: &mut Args<'_, W>) -> Result<(), A
 					let (Ok(idx) | Err(idx)) = args.entries[entries_idx]
 						.binary_search_by(|other| args.sort_order.cmp_entry(&group_entry, other));
 					args.entries.insert(entries_idx.start + idx, group_entry);
+					entries_idx.end += 1;
 				}
 
 				// Note: See above on why we're reversing this
