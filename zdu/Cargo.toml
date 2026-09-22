@@ -6,7 +6,6 @@ edition = "2024"
 [dependencies]
 
 app-error         = { workspace = true }
-chrono            = { workspace = true }
 clap              = { features = ["derive"], workspace = true }
 clap_complete     = { workspace = true }
 derive_more       = { features = ["full"], workspace = true }
@@ -16,8 +15,6 @@ itertools         = { workspace = true }
 md5               = { workspace = true }
 memchr            = { workspace = true }
 owo-colors        = { workspace = true }
-postcard          = { features = ["use-std"], workspace = true }
-serde             = { features = ["derive"], workspace = true }
 strum             = { features = ["derive"], workspace = true }
 thiserror         = { workspace = true }
 tracing           = { workspace = true }
